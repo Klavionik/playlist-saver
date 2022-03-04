@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your playlists</title>
+</head>
+<body>
+Hello, {{ username }}!
+
+Your playlists:
+<ol>
+    {% for id, playlist in playlists %}
+        <li><a href="/playlists/{{ id }}:{{ playlist|urlencode }}">{{ playlist }}</a></li>
+    {% endfor %}
+</ol>
+
+Click on the playlist name to download it's content as a CSV file.
+</body>
+</html>
