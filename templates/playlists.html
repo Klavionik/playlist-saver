@@ -10,7 +10,7 @@ Hello, {{ username }}!
 Your playlists:
 <ol>
     {% for id, playlist in playlists %}
-        <li><a href="/playlists/{{ id }}:{{ playlist|urlencode }}">{{ playlist }}</a></li>
+        <li><a href="/playlists/{{ id }}-{{ playlist }}">{{ playlist }}</a></li>
     {% endfor %}
 </ol>
 

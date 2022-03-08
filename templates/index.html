@@ -6,17 +6,35 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Spotify Playlists</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <style>
-        .login {
+        html, body {
+            font-size: 24px;
+            height: 100%;
+        }
+
+        .app {
             display: flex;
-            justify-content: center;
+            height: 100%;
+        }
+
+        .navigation {
+            display: flex;
+            column-gap: 15px;
+            margin: auto auto;
+        }
+
+        .navigation a {
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-<div class="login">
-    <a href="/login">Login with Spotify</a>
-    <a href="/playlists">Show my playlists</a>
+<div class="app">
+    <div class="navigation">
+        <a href="/login">Login with Spotify</a>
+        <a href="/playlists">Show my playlists</a>
+    </div>
 </div>
 </body>
 </html>
