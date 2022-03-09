@@ -36,7 +36,15 @@ async def login(
 
 
 @router.get('/callback')
-async def callback(request: Request, spotify: Client = Depends(get_client), config: Config = Depends(get_config)):
+async def callback(
+        request: Request,
+        error: str | None = None,
+        spotify: Client = Depends(get_client),
+        config: Config = Depends(get_config)
+):
+    if error:
+        return responses.RedirectResponse('/')
+
     state = request.session.get(config.STATE_KEY)
 
     async with spotify:
