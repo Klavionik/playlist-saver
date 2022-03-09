@@ -2,7 +2,7 @@ import csv
 import os
 import tempfile
 from datetime import datetime, timedelta
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 from typing import Iterable
 
 HEADER_ROW = ('Track', 'Artist', 'Album', 'Added by', 'Date added', 'Duration')
@@ -35,3 +35,20 @@ def save_playlist_as_csv(header_row: Iterable[str], items: Iterable) -> str:
 def delete_temp_file(path: str):
     if os.path.exists(path):
         os.remove(path)
+
+
+class Playlist:
+    def __init__(self, data: Dict):
+        self.id = data['id']
+        self.name = data['name']
+        self.description = data['description']
+        self.image = self._get_image_url(data['images'])
+        self.owner = data['owner']['display_name']
+        self.tracks_total = data['tracks']['total']
+
+    @staticmethod
+    def _get_image_url(images: List):
+        def cmp_by_width(image: Dict):
+            return image['width']
+        smallest_image = sorted(images, key=cmp_by_width)[0]
+        return smallest_image['url']

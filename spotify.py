@@ -109,8 +109,16 @@ class Client:
         return await self.session.get(f'/playlists/{playlist_id}/tracks?{query}')
 
 
-def get_all_scopes():
-    return list(ScopeItem)
+def get_scopes(collaborative: bool, private: bool):
+    scopes = list(ScopeItem)
+
+    if not collaborative:
+        scopes.remove(ScopeItem.PLAYLIST_READ_COLLABORATIVE)
+
+    if not private:
+        scopes.remove(ScopeItem.PLAYLIST_READ_PRIVATE)
+
+    return scopes
 
 
 def get_client(req: fastapi.Request, config: Config = Depends(get_config)) -> Client:

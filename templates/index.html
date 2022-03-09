@@ -1,40 +1,41 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Spotify Playlists</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <style>
-        html, body {
-            font-size: 24px;
-            height: 100%;
-        }
+{% extends 'base.html' %}
 
-        .app {
-            display: flex;
-            height: 100%;
-        }
+{% block title %}
+    <title>Home | Playlist Saver</title>
+{% endblock %}
 
-        .navigation {
-            display: flex;
-            column-gap: 15px;
-            margin: auto auto;
-        }
-
-        .navigation a {
-            text-decoration: none;
-        }
-    </style>
-</head>
-<body>
-<div class="app">
-    <div class="navigation">
-        <a href="/login">Login with Spotify</a>
-        <a href="/playlists">Show my playlists</a>
-    </div>
-</div>
-</body>
-</html>
+{% block content %}
+    <section class="section">
+        <div class="columns is-centered">
+            <div class="column is-one-third">
+                <div class="is-flex is-flex-direction-column is-align-items-center is-size-4">
+                    <div class="content is-size-6">
+                        Hello, stranger! We'll need restricted access to your Spotify account to
+                        read your playlists.<br><br>Click the login button, and you'll be redirected
+                        to the Spotify gateway. Follow the instructions from Spotify. We'll wait for you here.
+                    </div>
+                    <form action="/login" method="GET">
+                        <div class="field">
+                            <div class="control">
+                                <label class="checkbox">
+                                    <input type="checkbox" name="collaborative">
+                                    Include collaborative playlists
+                                </label>
+                            </div>
+                            <div class="control">
+                                <label class="checkbox">
+                                    <input type="checkbox" name="private">
+                                    Include private playlists
+                                </label>
+                            </div>
+                        </div>
+                        <button class="button" type="submit">
+                            <span class="icon is-small" style="color: #1DB954;"><i class="fab fa-spotify"></i></span>
+                            <span>Login with Spotify</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

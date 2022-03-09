@@ -1,19 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Your playlists</title>
-</head>
-<body>
-Hello, {{ username }}!
+{% extends 'base.html' %}
 
-Your playlists:
-<ol>
-    {% for id, playlist in playlists %}
-        <li><a href="/playlists/{{ id }}-{{ playlist }}">{{ playlist }}</a></li>
-    {% endfor %}
-</ol>
+{% block title %}
+    <title>Your playlists | Playlist Saver</title>
+{% endblock %}
 
-Click on the playlist name to download it's content as a CSV file.
-</body>
-</html>
+{% block content %}
+    <section class="section pt-3">
+        <div class="columns is-centered">
+            <div class="column is-three-quarters">
+                <nav class="level">
+                    <div class="level-left">
+                        <span class="level-item is-size-5">
+                            <span>Welcome, <b>{{ username }}</b>!</span>
+                        </span>
+                        <a class="button level-item" href="/logout">
+                            <span class="icon is-small"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </nav>
+                <div class="columns">
+                    <div class="column is-half">
+                        <div class="content is-size-6" style="position: sticky; top: 2rem;">
+                            <p>
+                                Here you can find your Spotify playlists. Click the green icon on the right side to
+                                download a CSV file.
+                                Inside it, you will find a list of tracks. Each track data contains the following:
+                            <ul class="has-text-weight-semibold	">
+                                <li>Name</li>
+                                <li>Artist</li>
+                                <li>Album</li>
+                                <li>Added by</li>
+                                <li>Date added</li>
+                                <li>Duration</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="is-flex is-flex-direction-column is-size-5">
+                            <ul>
+                                {% for playlist in playlists %}
+                                    <li class="box">
+                                        <article class="media">
+                                            <figure class="media-left">
+                                                <p class="image is-64x64">
+                                                    <img src="{{ playlist.image }}" alt="Playlist cover">
+                                                </p>
+                                            </figure>
+                                            <div class="media-content">
+                                                <b>{{ playlist.name }}</b>
+                                                <p class="is-size-6" style="line-height: 0.8rem">by {{ playlist.owner }}
+                                                    &bull; {{ playlist.tracks_total }} songs</p>
+                                                <div class="mt-3 is-size-7">{{ playlist.description|safe }}</div>
+                                            </div>
+                                            <div class="media-right">
+                                                <div>
+                                                    <a class="ml-auto"
+                                                        href="/playlists/{{ playlist.id }}-{{ playlist.name }}">
+                                                        <i class="fa-solid fa-file-arrow-down fa-xl"
+                                                        style="color: #1DB954"></i></a>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

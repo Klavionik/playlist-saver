@@ -2,22 +2,32 @@ from fastapi import APIRouter, responses, Request, BackgroundTasks, Depends, Pat
 from starlette.templating import Jinja2Templates
 
 from config import Config, get_config
-from spotify import Client, Scope, get_all_scopes, get_client
-from utils import delete_temp_file, save_playlist_as_csv, HEADER_ROW
+from spotify import Client, Scope, get_scopes, get_client
+from utils import delete_temp_file, save_playlist_as_csv, HEADER_ROW, Playlist
 
 router = APIRouter()
 templates = Jinja2Templates('templates')
 
 
 @router.get('/', response_class=responses.HTMLResponse)
-async def index(request: Request):
+async def index(request: Request, config: Config = Depends(get_config)):
+    token = request.session.get(config.TOKEN_KEY)
+
+    if token:
+        return responses.RedirectResponse('/playlists')
     return templates.TemplateResponse('index.html', {'request': request})
 
 
 @router.get('/login')
-async def login(request: Request, spotify: Client = Depends(get_client), config: Config = Depends(get_config)):
+async def login(
+        request: Request,
+        collaborative: bool = False,
+        private: bool = False,
+        spotify: Client = Depends(get_client),
+        config: Config = Depends(get_config)
+):
     scope = Scope()
-    scope.add_scopes(*get_all_scopes())
+    scope.add_scopes(*get_scopes(collaborative, private))
 
     async with spotify:
         url, state = spotify.authorize(scope)
@@ -45,7 +55,7 @@ async def get_playlists(request: Request, spotify: Client = Depends(get_client))
 
         data = await spotify.get_playlists(user_id)
         items = data.get('items')
-        playlists = [(playlist['id'], playlist['name']) for playlist in items]
+        playlists = [Playlist(item) for item in items]
 
     ctx = {'request': request, 'username': username, 'playlists': playlists}
 
@@ -75,6 +85,12 @@ async def get_playlist_details(
     tasks.add_task(delete_temp_file, filepath)
     response = responses.FileResponse(filepath, media_type='text/csv', filename=f'{name}.csv')
     return response
+
+
+@router.get('/logout')
+async def logout(request: Request, config: Config = Depends(get_config)):
+    request.session.pop(config.TOKEN_KEY)
+    return responses.RedirectResponse('/')
 
 
 def get_router():
