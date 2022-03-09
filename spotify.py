@@ -65,7 +65,9 @@ class Client:
     client_id: str
     client_secret: str
     redirect_uri: str
-    token: Dict | None = None
+    token: Dict | None
+    token_key: str
+    bound_request: fastapi.Request
     session: httpx_client.AsyncOAuth2Client | None = None
     tracks_limit: int = 50
 
@@ -75,7 +77,10 @@ class Client:
             client_id=self.client_id,
             client_secret=self.client_secret,
             redirect_uri=self.redirect_uri,
-            token=self.token
+            token=self.token,
+            update_token=self._update_token,
+            token_endpoint='https://accounts.spotify.com/api/token',
+            event_hooks={'request': [log_request]}
         )
         await self.session.__aenter__()
         return self
@@ -90,10 +95,7 @@ class Client:
 
     async def fetch_token(self, auth_response: str, state: str):
         self.session.state = state
-        return await self.session.fetch_token(
-            'https://accounts.spotify.com/api/token',
-            authorization_response=auth_response
-        )
+        return await self.session.fetch_token(authorization_response=auth_response)
 
     @request
     async def get_user(self) -> Response:
@@ -107,6 +109,12 @@ class Client:
     async def get_tracks(self, playlist_id: str, page: int = 0) -> Response:
         query = urlencode({'offset': self.tracks_limit * page, 'limit': self.tracks_limit})
         return await self.session.get(f'/playlists/{playlist_id}/tracks?{query}')
+
+    def save_token(self, token: Dict):
+        self.bound_request.session[self.token_key] = token
+
+    async def _update_token(self, token, *_, **__):
+        self.save_token(token)
 
 
 def get_scopes(collaborative: bool, private: bool):
@@ -124,9 +132,11 @@ def get_scopes(collaborative: bool, private: bool):
 def get_client(req: fastapi.Request, config: Config = Depends(get_config)) -> Client:
     token = req.session.get(config.TOKEN_KEY)
     return Client(
-        config.BASE_API_URL,
-        config.CLIENT_ID,
-        config.CLIENT_SECRET,
-        config.REDIRECT_URI,
-        token
+        base_url=config.BASE_API_URL,
+        client_id=config.CLIENT_ID,
+        client_secret=config.CLIENT_SECRET,
+        redirect_uri=config.REDIRECT_URI,
+        token=token,
+        token_key=config.TOKEN_KEY,
+        bound_request=req
     )

@@ -45,13 +45,12 @@ async def callback(
     if error:
         return responses.RedirectResponse('/')
 
-    state = request.session.get(config.STATE_KEY)
+    state = request.session.pop(config.STATE_KEY)
 
     async with spotify:
         token = await spotify.fetch_token(str(request.url), state)
+        spotify.save_token(token)
 
-    request.session[config.TOKEN_KEY] = token
-    request.session.pop(config.STATE_KEY)
     return responses.RedirectResponse('/playlists')
 
 
