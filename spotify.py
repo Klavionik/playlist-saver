@@ -76,7 +76,7 @@ class Client:
             base_url=self.base_url,
             client_id=self.client_id,
             client_secret=self.client_secret,
-            redirect_uri=self.redirect_uri,
+            redirect_uri=self._get_redirect_uri(),
             token=self.token,
             update_token=self._update_token,
             token_endpoint='https://accounts.spotify.com/api/token',
@@ -115,6 +115,9 @@ class Client:
 
     async def _update_token(self, token, *_, **__):
         self.save_token(token)
+
+    def _get_redirect_uri(self):
+        return self.bound_request.url_for('/callback')
 
 
 def get_scopes(collaborative: bool, private: bool):
