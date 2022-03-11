@@ -1,0 +1,37 @@
+services:
+  backend:
+    image: ${BACKEND_IMAGE}:latest
+    env_file:
+      - .env
+    environment:
+      - CLIENT_ID=${CLIENT_ID}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+      - SECRET_KEY=${SECRET_KEY}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.web.rule=PathPrefix(`${SUBDOMAIN}`)
+      - traefik.http.middlewares.stripper.stripprefix.prefixes=${SUBDOMAIN}
+      - traefik.http.routers.web.middlewares=stripper
+      - traefik.http.services.web.loadbalancer.server.port=8030
+
+  traefik:
+    image: traefik:2.6
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./letsencrypt:/letsencrypt
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik.entrypoints=web
+      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.routers.traefik.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.traefik.tls=true
+      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
+      - traefik.http.routers.traefik.tls.domains[0].main=${DOMAIN}
+      - traefik.http.routers.dashboard.rule=Host(`dashboard.${DOMAIN}`)
+      - traefik.http.routers.dashboard.service=api@internal
+      - traefik.http.routers.dashboard.middlewares=auth
+      - traefik.http.middlewares.auth.basicauth.users=${AUTH}
