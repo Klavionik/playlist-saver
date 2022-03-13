@@ -1,0 +1,50 @@
+name: Build and deploy to YC
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      yc_cr_id: ${{ secrets.YC_CR_ID }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Log in YC CR
+        env:
+          yc_creds: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+        run: docker login --username json_key --password $yc_creds cr.yandex
+
+      - name: Build the app
+        run: docker build -t $yc_cr_id/spotify-playlist-saver:latest ./app
+
+      - name: Push the image
+        run: docker push $yc_cr_id/spotify-playlist-saver:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Create dotenv
+        run: echo "${{ secrets.ENV }}" > .env
+
+      - name: Create SSH key
+        run: echo "${{ secrets.INSTANCE_SSH_KEY }}" > .ssh-key
+
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install software-properties-common
+          sudo add-apt-repository --yes --update ppa:ansible/ansible
+          sudo apt install ansible
+
+      - uses: actions/checkout@v2
+
+      - name: Deploy
+        env:
+          ssh_user: ${{ secrets.INSTANCE_USER }}
+          ssh_key_file: .ssh-key
+        run: ansible-deploy playbook.yml -i inventory.yml
