@@ -32,9 +32,6 @@ jobs:
       - name: Create SSH key
         run: echo "${{ secrets.INSTANCE_SSH_KEY }}" > .ssh-key
 
-      - name: Add SSH host key
-        run: mkdir -m 700 -p ~/.ssh && echo "${{ secrets.HOST_KEY }}" >> ~/.ssh/know_hosts
-
       - name: Install Ansible
         run: |
           sudo apt update
@@ -49,4 +46,5 @@ jobs:
           ssh_user: ${{ secrets.INSTANCE_USER }}
           ssh_key_file: .ssh-key
           host: ${{ secrets.HOST }}
+          ANSIBLE_HOST_KEY_CHECKING: false
         run: ansible-playbook playbook.yml -i inventory.yml
