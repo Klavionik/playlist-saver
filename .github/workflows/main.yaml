@@ -32,6 +32,9 @@ jobs:
       - name: Create SSH key
         run: echo "${{ secrets.INSTANCE_SSH_KEY }}" > .ssh-key
 
+      - name: Add SSH host key
+        run: mkdir -m 700 -p ~/.ssh && echo "${{ secrets.HOST_KEY }}" >> ~/.ssh/know_hosts
+
       - name: Install Ansible
         run: |
           sudo apt update
