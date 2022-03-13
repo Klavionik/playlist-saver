@@ -45,4 +45,4 @@ jobs:
         env:
           ssh_user: ${{ secrets.INSTANCE_USER }}
           ssh_key_file: .ssh-key
-        run: ansible-deploy playbook.yml -i inventory.yml
+        run: ansible-playbook playbook.yml -i inventory.yml
