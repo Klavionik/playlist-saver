@@ -116,7 +116,7 @@ class Client:
         self.save_token(token)
 
     def _get_redirect_uri(self):
-        return self.bound_request.url_for('/callback')
+        return self.bound_request.url_for('callback')
 
 
 def get_scopes(collaborative: bool, private: bool):
