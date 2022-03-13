@@ -64,7 +64,6 @@ class Client:
     base_url: str
     client_id: str
     client_secret: str
-    redirect_uri: str
     token: Dict | None
     token_key: str
     bound_request: fastapi.Request
@@ -138,7 +137,6 @@ def get_client(req: fastapi.Request, config: Config = Depends(get_config)) -> Cl
         base_url=config.BASE_API_URL,
         client_id=config.CLIENT_ID,
         client_secret=config.CLIENT_SECRET,
-        redirect_uri=config.REDIRECT_URI,
         token=token,
         token_key=config.TOKEN_KEY,
         bound_request=req
