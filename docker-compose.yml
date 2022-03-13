@@ -11,9 +11,7 @@ services:
       - SECRET_KEY=${SECRET_KEY}
     labels:
       - traefik.enable=true
-      - traefik.http.routers.backend.rule=PathPrefix(`${SUBDOMAIN}`)
-      - traefik.http.middlewares.stripper.stripprefix.prefixes=${SUBDOMAIN}
-      - traefik.http.routers.backend.middlewares=stripper
+      - traefik.http.routers.backend.rule=Host(`${SUBDOMAIN}.${DOMAIN}`)
 
   traefik:
     image: traefik:2.6
