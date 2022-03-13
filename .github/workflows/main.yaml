@@ -26,6 +26,8 @@ jobs:
     needs: build
 
     steps:
+      - uses: actions/checkout@v2
+
       - name: Create dotenv
         run: echo "${{ secrets.ENV }}" > .env
 
@@ -38,8 +40,6 @@ jobs:
           sudo apt install software-properties-common
           sudo add-apt-repository --yes --update ppa:ansible/ansible
           sudo apt install ansible
-
-      - uses: actions/checkout@v2
 
       - name: Deploy
         env:
