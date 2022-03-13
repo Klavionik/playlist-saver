@@ -45,4 +45,5 @@ jobs:
         env:
           ssh_user: ${{ secrets.INSTANCE_USER }}
           ssh_key_file: .ssh-key
+          host: ${{ secrets.HOST }}
         run: ansible-playbook playbook.yml -i inventory.yml
