@@ -11,7 +11,7 @@ services:
       - SECRET_KEY=${SECRET_KEY}
     labels:
       - traefik.enable=true
-      - traefik.http.routers.backend.rule=Host(`${SUBDOMAIN}.${DOMAIN}`)
+      - traefik.http.routers.backend.rule=Host(`playlist-saver.${DOMAIN}`)
 
   traefik:
     image: traefik:2.6
@@ -29,7 +29,7 @@ services:
       - --entrypoints.websecure=true
       - --entrypoints.websecure.address=:443
       - --entrypoints.websecure.http.tls.certresolver=le
-      - --entrypoints.websecure.http.tls.domains[0].main=${DOMAIN}
+      - --entrypoints.websecure.http.tls.domains[0].main=playlist-saver.${DOMAIN}
       - --providers.docker
       - --providers.docker.exposedbydefault=false
       - --certificatesresolvers=le
