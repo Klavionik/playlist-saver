@@ -3,16 +3,17 @@ services:
     image: ${BACKEND_IMAGE}:latest
     env_file:
       - .env
+    expose:
+      - 8030
     environment:
       - CLIENT_ID=${CLIENT_ID}
       - CLIENT_SECRET=${CLIENT_SECRET}
       - SECRET_KEY=${SECRET_KEY}
     labels:
       - traefik.enable=true
-      - traefik.http.routers.web.rule=PathPrefix(`${SUBDOMAIN}`)
+      - traefik.http.routers.backend.rule=PathPrefix(`${SUBDOMAIN}`)
       - traefik.http.middlewares.stripper.stripprefix.prefixes=${SUBDOMAIN}
-      - traefik.http.routers.web.middlewares=stripper
-      - traefik.http.services.web.loadbalancer.server.port=8030
+      - traefik.http.routers.backend.middlewares=stripper
 
   traefik:
     image: traefik:2.6
@@ -21,17 +22,30 @@ services:
       - 443:443
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik.yml:/etc/traefik/traefik.yml:ro
       - ./letsencrypt:/letsencrypt
+    command:
+      - --api
+      - --entrypoints.web=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.websecure=true
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.http.tls.certresolver=le
+      - --entrypoints.websecure.http.tls.domains[0].main=${DOMAIN}
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+      - --certificatesresolvers=le
+      - --certificatesresolvers.le.acme.caserver=${CASERVER}
+      - --certificatesresolvers.le.acme.email=${CERT_EMAIL}
+      - --certificatesresolvers.le.acme.httpchallenge=true
+      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.le.acme.storage=letsencrypt/acme.json
     labels:
       - traefik.enable=true
-      - traefik.http.routers.traefik.entrypoints=web
-      - traefik.http.routers.traefik.entrypoints=websecure
-      - traefik.routers.traefik.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.traefik.tls=true
-      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
-      - traefik.http.routers.traefik.tls.domains[0].main=${DOMAIN}
-      - traefik.http.routers.dashboard.rule=Host(`dashboard.${DOMAIN}`)
+      - traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)
+      - traefik.http.routers.dashboard.tls=true
+      - traefik.http.routers.dashboard.tls.certresolver=le
+      - traefik.http.routers.dashboard.tls.domains[0].main=traefik.${DOMAIN}
       - traefik.http.routers.dashboard.service=api@internal
       - traefik.http.routers.dashboard.middlewares=auth
       - traefik.http.middlewares.auth.basicauth.users=${AUTH}
