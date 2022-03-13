@@ -99,7 +99,3 @@ async def get_playlist_details(
 async def logout(request: Request, config: Config = Depends(get_config)):
     request.session.pop(config.TOKEN_KEY)
     return responses.RedirectResponse('/')
-
-
-def get_router():
-    return router
