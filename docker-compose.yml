@@ -1,8 +1,6 @@
 services:
   backend:
     image: ${BACKEND_IMAGE}:latest
-    env_file:
-      - .env
     expose:
       - 8030
     environment:
