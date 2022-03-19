@@ -1,0 +1,7 @@
+services:
+  backend:
+    build: ./app
+    env_file:
+      - .env.dev
+    ports:
+      - "8030:8030"
