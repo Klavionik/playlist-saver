@@ -8,8 +8,8 @@ class Config(BaseSettings):
     BASE_API_URL: str = 'https://api.spotify.com/v1'
     SECRET_KEY: str = ''
     STATE_KEY: str = '_spotify_state'
-    TOKEN_KEY: str = '_spotify-token'
-    REFRESH_TOKEN_KEY: str = '_spotify-refresh-token'
+    TOKEN_KEY: str = '_spotify_token'
+    REFRESH_TOKEN_KEY: str = '_spotify_refresh_token'
 
     class Config:
         env_file = '.env'
