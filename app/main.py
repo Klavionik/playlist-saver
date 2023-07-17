@@ -1,8 +1,7 @@
-from fastapi import FastAPI
-from starlette.middleware.sessions import SessionMiddleware
-
 from config import config
+from fastapi import FastAPI
 from routes import router
+from starlette.middleware.sessions import SessionMiddleware
 
 
 def create_app():
