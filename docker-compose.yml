@@ -1,48 +1,14 @@
 services:
   backend:
-    image: ${BACKEND_IMAGE}:latest
-    expose:
-      - 8030
-    environment:
-      - CLIENT_ID=${CLIENT_ID}
-      - CLIENT_SECRET=${CLIENT_SECRET}
-      - SECRET_KEY=${SECRET_KEY}
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.backend.rule=Host(`playlist-saver.${DOMAIN}`)
-      - traefik.http.routers.backend.tls=true
-      - traefik.http.routers.backend.tls.certresolver=le
-      - traefik.http.routers.backend.tls.domains[0].main=playlist-saver.${DOMAIN}
-
-  traefik:
-    image: traefik:2.6
+    build:
+      context: app
+    command: ["uvicorn", "--host", "0.0.0.0", "--port", "8030", "--factory", "main:create_app", "--reload"]
     ports:
-      - 80:80
-      - 443:443
+      - 8030:8030
+    environment:
+      - DEBUG
+      - CLIENT_ID
+      - CLIENT_SECRET
+      - SECRET_KEY
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./letsencrypt:/letsencrypt
-    command:
-      - --api
-      - --entrypoints.web=true
-      - --entrypoints.web.address=:80
-      - --entrypoints.web.http.redirections.entrypoint.to=websecure
-      - --entrypoints.websecure=true
-      - --entrypoints.websecure.address=:443
-      - --providers.docker
-      - --providers.docker.exposedbydefault=false
-      - --certificatesresolvers=le
-      - --certificatesresolvers.le.acme.caserver=${CASERVER}
-      - --certificatesresolvers.le.acme.email=${CERT_EMAIL}
-      - --certificatesresolvers.le.acme.httpchallenge=true
-      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
-      - --certificatesresolvers.le.acme.storage=letsencrypt/acme.json
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)
-      - traefik.http.routers.dashboard.tls=true
-      - traefik.http.routers.dashboard.tls.certresolver=le
-      - traefik.http.routers.dashboard.tls.domains[0].main=traefik.${DOMAIN}
-      - traefik.http.routers.dashboard.service=api@internal
-      - traefik.http.routers.dashboard.middlewares=auth
-      - traefik.http.middlewares.auth.basicauth.users=${AUTH}
+      - ./app:/opt/app
