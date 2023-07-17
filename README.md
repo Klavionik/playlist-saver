@@ -1,4 +1,4 @@
-# Playlist Saver
+# Playlist Saver for Spotify
 
 Save your Spotify playlists as CSV data.
 
