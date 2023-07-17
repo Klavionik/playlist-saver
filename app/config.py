@@ -11,9 +11,6 @@ class Config(BaseSettings):
     TOKEN_KEY: str = '_spotify_token'
     REFRESH_TOKEN_KEY: str = '_spotify_refresh_token'
 
-    class Config:
-        env_file = '.env'
-
 
 config = Config()
 
