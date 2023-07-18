@@ -1,11 +1,18 @@
+import enum
+
 from config import Config, get_config
 from fastapi import APIRouter, BackgroundTasks, Depends, Path, Request, responses
-from spotify import Client, Scope, get_client, get_scopes
+from spotify import Client, get_client, get_scope
 from starlette.templating import Jinja2Templates
 from utils import HEADER_ROW, Playlist, delete_temp_file, save_playlist_as_csv
 
 router = APIRouter()
 templates = Jinja2Templates("templates")
+
+
+class PlaylistScope(str, enum.Enum):
+    ALL = "all"
+    PUBLIC = "public"
 
 
 @router.get("/", response_class=responses.HTMLResponse)
@@ -20,16 +27,14 @@ async def index(request: Request, config: Config = Depends(get_config)):
 @router.get("/login")
 async def login(
     request: Request,
-    collaborative: bool = False,
-    private: bool = False,
+    scope: PlaylistScope,
     spotify: Client = Depends(get_client),
     config: Config = Depends(get_config),
 ):
-    scope = Scope()
-    scope.add_scopes(*get_scopes(collaborative, private))
+    auth_scope = get_scope(public_playlists=scope == PlaylistScope.PUBLIC)
 
     async with spotify:
-        url, state = spotify.authorize(scope)
+        url, state = spotify.authorize(auth_scope)
         request.session[config.STATE_KEY] = state
     return responses.RedirectResponse(url)
 

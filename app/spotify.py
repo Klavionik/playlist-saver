@@ -119,14 +119,12 @@ class Client:
         return str(self.bound_request.url_for("callback"))
 
 
-def get_scopes(collaborative: bool, private: bool):
+def get_scope(public_playlists: bool):
     scopes = list(ScopeItem)
 
-    if not collaborative:
-        scopes.remove(ScopeItem.PLAYLIST_READ_COLLABORATIVE)
-
-    if not private:
+    if public_playlists:
         scopes.remove(ScopeItem.PLAYLIST_READ_PRIVATE)
+        scopes.remove(ScopeItem.PLAYLIST_READ_COLLABORATIVE)
 
     return scopes
 

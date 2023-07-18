@@ -1,41 +1,53 @@
 {% extends 'base.html' %}
 
 {% block head %}
-    <title>Home | Playlist Saver</title>
+  <title>Home | Playlist Saver</title>
 {% endblock %}
 
 {% block content %}
-    <section class="section">
-        <div class="columns is-centered">
-            <div class="column is-one-third">
-                <div class="is-flex is-flex-direction-column is-align-items-center is-size-4">
-                    <div class="content is-size-6">
-                        Hello, stranger! We'll need restricted access to your Spotify account to
-                        read your playlists.<br><br>Click the login button, and you'll be redirected
-                        to the Spotify gateway. Follow the instructions from Spotify. We'll wait for you here.
-                    </div>
-                    <form action="/login" method="GET">
-                        <div class="field">
-                            <div class="control">
-                                <label class="checkbox">
-                                    <input type="checkbox" name="collaborative">
-                                    Include collaborative playlists
-                                </label>
-                            </div>
-                            <div class="control">
-                                <label class="checkbox">
-                                    <input type="checkbox" name="private">
-                                    Include private playlists
-                                </label>
-                            </div>
-                        </div>
-                        <button class="button" type="submit">
-                            <span class="icon is-small" style="color: #1DB954;"><i class="fab fa-spotify"></i></span>
-                            <span>Login with Spotify</span>
-                        </button>
-                    </form>
-                </div>
+  <section class="section">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <div class="is-flex is-flex-direction-column is-align-items-center is-size-4">
+
+          <div class="content is-size-6">
+            <p>
+              Hello, stranger! We're going to need restricted access to your Spotify account to
+              read your username and get your playlists. Then we'll present you with a list of your playlists and
+              an option to download each playlist data.
+            </p>
+            <p>
+              <b>Important:</b>&nbsp;the service does not store (or transfer to a third party) any of your data. The
+              service is provided free of charge.
+            </p>
+            <p>
+              Click the login button, and you'll be redirected to the Spotify gateway. Follow instructions from
+              Spotify. We'll wait for you here.
+            </p>
+          </div>
+
+          <form action="/login" method="GET">
+            <div class="field">
+              <div class="control">
+                <label class="radio">
+                  <input type="radio" name="scope" value="all" checked>
+                  All playlists
+                </label>
+              </div>
+              <div class="control mt-1">
+                <label class="radio">
+                  <input type="radio" name="scope" value="public">
+                  Only public playlists
+                </label>
+              </div>
             </div>
+            <button class="button" type="submit">
+              <span class="icon is-small" style="color: #1DB954;"><i class="fab fa-spotify"></i></span>
+              <span>Login with Spotify</span>
+            </button>
+          </form>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 {% endblock %}
