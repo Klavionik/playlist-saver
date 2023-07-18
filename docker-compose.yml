@@ -2,9 +2,9 @@ services:
   backend:
     build:
       context: app
-    command: ["uvicorn", "--host", "0.0.0.0", "--port", "8030", "--factory", "main:create_app", "--reload"]
+    command: ["uvicorn", "--host", "0.0.0.0", "--port", "8000", "--factory", "main:create_app", "--reload"]
     ports:
-      - 8030:8030
+      - 8000:8000
     environment:
       - DEBUG
       - CLIENT_ID
