@@ -12,14 +12,19 @@
   {% block head %}
   {% endblock %}
 </head>
-<body>
+<body class="is-flex is-flex-direction-column" style="min-height: 100vh;">
 <header class="hero is-primary is-small">
   <div class="hero-body">
     <p class="title">Playlist Saver for Spotify</p>
     <p class="subtitle">Save your tracks info as simple table data</p>
   </div>
 </header>
-{% block content %}
-{% endblock %}
+<main class="is-flex-grow-1">
+  {% block content %}
+  {% endblock %}
+</main>
+<footer class="footer has-text-centered mt-auto">
+  A project by <a href="https://klavionik.dev">Klavionik</a>.<br/>Source code available on <a href="https://github.com/Klavionik/playlist-saver"><i class="fab fa-github"></i></a>.
+</footer>
 </body>
 </html>
