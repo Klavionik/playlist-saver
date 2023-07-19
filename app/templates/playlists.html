@@ -10,9 +10,9 @@
       <div class="column is-three-quarters">
         <nav class="level">
           <div class="level-left">
-            <span class="level-item is-size-5">
+            <h2 class="level-item is-size-5">
                 <span>Welcome, <b>{{ username }}</b>!</span>
-            </span>
+            </h2>
             <a class="button level-item" href="/logout">
               <span class="icon is-small"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
               <span>Logout</span>
@@ -21,12 +21,16 @@
         </nav>
         <div class="columns">
           <div class="column is-half">
-            <div class="content is-size-6" style="position: sticky; top: 2rem;">
+            <div class="content" style="position: sticky; top: 2rem;">
+              <h3 class="is-size-6">Here you can find your playlists.</h3>
               <p>
-                Here you can find your Spotify playlists. Click the green icon on the right side to
-                download a CSV file.
-                Inside it, you will find a list of tracks. Each track data contains the following:
-              <ul class="has-text-weight-semibold	">
+                You can click the <b>Download</b> button to download a CSV file or click the <b>Open Spotify</b> button
+                to view your playlist in Spotify.
+              </p>
+              <p>
+                Inside a CSV file you will find a list of tracks. Each track contains the following data:
+              </p>
+              <ul class="has-text-weight-semibold">
                 <li>Name</li>
                 <li>Artist</li>
                 <li>Album</li>
@@ -34,38 +38,56 @@
                 <li>Date added</li>
                 <li>Duration</li>
               </ul>
+              <p>
+                All playlist data is provided by Spotify.
+              </p>
             </div>
           </div>
           <div class="column">
             <div class="is-flex is-flex-direction-column is-size-5">
               <ul>
                 {% for playlist in playlists %}
-                  <li class="box">
-                    <article class="media">
-                      <figure class="media-left">
-                        <p class="image is-64x64">
-                          <img src="{{ playlist.image }}" alt="Playlist cover">
-                        </p>
-                      </figure>
-                      <div class="media-content">
-                        <b>{{ playlist.name }}</b>
-                        <p class="is-size-6" style="line-height: 0.8rem">{{ playlist.owner }}
-                          &bull; {{ playlist.tracks_total }} songs</p>
-                        <div class="mt-3 is-size-7">{{ playlist.description|safe }}</div>
+                  <li class="block">
+                    <div class="card">
+                      <div class="card-content">
+                        <article class="media">
+                          <figure class="media-left">
+                            <p class="image is-64x64">
+                              <img src="{{ playlist.image }}" alt="Playlist cover">
+                            </p>
+                          </figure>
+                          <div class="media-content">
+                            <b>{{ playlist.name }}</b>
+                            <p class="is-size-6" style="line-height: 0.8rem">{{ playlist.owner }}
+                              &bull; {{ playlist.tracks_total }} songs</p>
+                            <div class="mt-3 is-size-7">{{ playlist.description|safe }}</div>
+                          </div>
+                        </article>
                       </div>
-                      <div class="media-right">
-                        <div>
-                          <a
-                              class="ml-auto"
-                              href="/playlists/{{ playlist.id }}-{{ playlist.name }}"
-                          >
-                            <i
-                                class="fa-solid fa-file-arrow-down fa-xl"
-                                style="color: #1DB954"
-                            ></i></a>
-                        </div>
+                      <div class="card-footer">
+                        <a
+                            class="card-footer-item"
+                            href="/playlists/{{ playlist.id }}-{{ playlist.name }}"
+                        >
+                            <span class="icon-text has-text-black is-size-6">
+                              <span>Download</span>
+                              <span class="icon">
+                                <i class="fa-solid fa-file-arrow-down"></i>
+                              </span>
+                            </span>
+                        </a>
+                        <a
+                            class="card-footer-item"
+                            href="{{ playlist.url }}"
+                        >
+                          <span class="icon-text has-text-black is-size-6">
+                            <span>Open Spotify</span>
+                            <span class="icon">
+                              <i class="fab fa-spotify" style="color: #1DB954;"></i>
+                            </span>
+                          </span></a>
                       </div>
-                    </article>
+                    </div>
                   </li>
                 {% else %}
                   <p class="has-text-centered has-text-weight-semibold">You have no playlists yet.</p>

@@ -44,6 +44,7 @@ class Playlist:
         self.image = self._get_image_url(data["images"])
         self.owner = data["owner"]["display_name"]
         self.tracks_total = data["tracks"]["total"]
+        self.url = data["external_urls"]["spotify"]
 
     @staticmethod
     def _get_image_url(images: List):
