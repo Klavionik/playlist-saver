@@ -13,10 +13,9 @@ def item_to_track(item: Dict) -> Tuple[str, ...]:
     album = item["track"]["album"]["name"]
     added_by = item["added_by"]["id"]
     added_at = str(datetime.fromisoformat(item["added_at"].rstrip("Z")))
-    duration_ms = timedelta(milliseconds=item["track"]["duration_ms"])
-    duration = f"{duration_ms.seconds // 60}:{duration_ms.seconds % 60}"
+    duration = timedelta(seconds=int(item["track"]["duration_ms"] / 1000))
 
-    return track_name, artist, album, added_by, added_at, duration
+    return track_name, artist, album, added_by, added_at, str(duration)
 
 
 def save_playlist_as_csv(header_row: Iterable[str], items: Iterable) -> str:
