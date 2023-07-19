@@ -5,3 +5,5 @@ COPY requirements.txt .
 RUN apk add --no-cache gcc libffi-dev musl-dev
 RUN pip install -r requirements.txt
 COPY . .
+ARG APP_VERSION
+ENV APP_VERSION=$APP_VERSION

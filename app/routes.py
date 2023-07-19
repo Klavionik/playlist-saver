@@ -6,8 +6,13 @@ from spotify import Client, get_client, get_scope
 from starlette.templating import Jinja2Templates
 from utils import HEADER_ROW, Playlist, delete_temp_file, save_playlist_as_csv
 
+
+def version_context(_) -> dict:
+    return {"version": get_config().APP_VERSION}
+
+
 router = APIRouter()
-templates = Jinja2Templates("templates")
+templates = Jinja2Templates("templates", context_processors=[version_context])
 
 
 class PlaylistScope(str, enum.Enum):

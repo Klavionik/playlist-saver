@@ -2,6 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Config(BaseSettings):
+    APP_VERSION: str = ""
     DEBUG: bool = False
     CLIENT_ID: str = ""
     CLIENT_SECRET: str = ""
