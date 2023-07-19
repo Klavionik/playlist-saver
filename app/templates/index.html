@@ -41,10 +41,18 @@
                 </label>
               </div>
             </div>
-            <button class="button" type="submit">
-              <span class="icon is-small" style="color: #1DB954;"><i class="fab fa-spotify"></i></span>
-              <span>Login with Spotify</span>
-            </button>
+            <div class="field">
+              <div class="control">
+                <button class="button" type="submit">
+                  <span class="icon is-small" style="color: #1DB954;"><i class="fab fa-spotify"></i></span>
+                  <span>Login with Spotify</span>
+                </button>
+              </div>
+              {% if error %}
+                <p class="help is-danger">Error: {{ error }}. Try again?</p>
+              {% endif %}
+            </div>
+
           </form>
         </div>
       </div>

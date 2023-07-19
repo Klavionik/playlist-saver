@@ -21,12 +21,12 @@ class PlaylistScope(str, enum.Enum):
 
 
 @router.get("/", response_class=responses.HTMLResponse)
-async def index(request: Request, config: Config = Depends(get_config)):
+async def index(request: Request, error: str | None = None, config: Config = Depends(get_config)):
     token = request.session.get(config.TOKEN_KEY)
 
     if token:
         return responses.RedirectResponse("/playlists")
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request, "error": error})
 
 
 @router.get("/login")
@@ -52,7 +52,7 @@ async def callback(
     config: Config = Depends(get_config),
 ):
     if error:
-        return responses.RedirectResponse("/")
+        return responses.RedirectResponse(f"/?error={error}")
 
     state = request.session.pop(config.STATE_KEY)
 
