@@ -11,6 +11,7 @@ class Config(BaseSettings):
     SECRET_KEY: str = ""
     STATE_KEY: str = "_spotify_state"
     TOKEN_KEY: str = "_spotify_token"
+    ERROR_KEY: str = "_spotify_oauth_error"
 
 
 config = Config()

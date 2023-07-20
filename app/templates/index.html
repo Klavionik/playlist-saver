@@ -8,8 +8,17 @@
   <section class="section">
     <div class="columns is-centered">
       <div class="column is-half">
-        <div class="is-flex is-flex-direction-column is-align-items-center is-size-4">
-
+        <div class="is-flex is-flex-direction-column is-align-items-center">
+          {% if error %}
+            <article class="message is-danger is-size-7" style="width: 100%">
+              <div class="message-header">
+                <p>Error</p>
+              </div>
+              <div class="message-body">
+                Authorization error: {{ error }}. Try logging in again.
+              </div>
+            </article>
+          {% endif %}
           <div class="content is-size-6">
             <p>
               Hello, stranger! We're going to need restricted access to your Spotify account to
@@ -48,11 +57,7 @@
                   <span>Login with Spotify</span>
                 </button>
               </div>
-              {% if error %}
-                <p class="help is-danger">Error: {{ error }}. Try again?</p>
-              {% endif %}
             </div>
-
           </form>
         </div>
       </div>

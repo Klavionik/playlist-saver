@@ -21,12 +21,19 @@ class PlaylistScope(str, enum.Enum):
 
 
 @router.get("/", response_class=responses.HTMLResponse)
-async def index(request: Request, error: str | None = None, config: Config = Depends(get_config)):
+async def index(request: Request, config: Config = Depends(get_config)):
+    ctx = {"request": request}
+
+    if error := request.session.get(config.ERROR_KEY):
+        ctx.update(error=error)
+        request.session.pop(config.ERROR_KEY)
+        return templates.TemplateResponse("index.html", ctx)
+
     token = request.session.get(config.TOKEN_KEY)
 
     if token:
         return responses.RedirectResponse("/playlists")
-    return templates.TemplateResponse("index.html", {"request": request, "error": error})
+    return templates.TemplateResponse("index.html", ctx)
 
 
 @router.get("/login")
@@ -51,10 +58,11 @@ async def callback(
     spotify: Client = Depends(get_client),
     config: Config = Depends(get_config),
 ):
-    if error:
-        return responses.RedirectResponse(f"/?error={error}")
-
     state = request.session.pop(config.STATE_KEY)
+
+    if error:
+        request.session[config.ERROR_KEY] = error
+        return responses.RedirectResponse("/")
 
     async with spotify:
         token = await spotify.fetch_token(str(request.url), state)
@@ -106,5 +114,5 @@ async def get_playlist_details(
 
 @router.get("/logout")
 async def logout(request: Request, config: Config = Depends(get_config)):
-    request.session.pop(config.TOKEN_KEY)
+    request.session.pop(config.TOKEN_KEY, None)
     return responses.RedirectResponse("/")
